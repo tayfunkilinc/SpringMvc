@@ -44,7 +44,6 @@ public class StudentService implements IStudentService{
         Özetle, `repository.findById(id)` tarafından döndürülen `Optional<Student>` boşsa,
          bu satır `StudentNotFountException` fırlatır ve öğrenci kimliğini içeren bir mesaj gösterir.*/
 
-
         Student student = repository.findById(id).
                 orElseThrow(()->new StudentNotFoundException("Student not found by id : " + id)); //null gelme durumune orElseThrow() hatasini firlat diyorum
         //supplier interfaceini implemente eden bir class olusturup,
@@ -59,8 +58,11 @@ public class StudentService implements IStudentService{
         return student;
     }
 
+    //4-b
     @Override
     public void deleteStudent(Long id) {
-
+            //idsi verilen ogrenciyi bulalim
+            Student student = findStudentById(id); //silemk istedigimiz ogrenci bulunamassa dogrudan exception firlatir
+            repository.delete(student);
     }
 }

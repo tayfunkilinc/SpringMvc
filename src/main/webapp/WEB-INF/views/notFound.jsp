@@ -15,8 +15,8 @@
 	align-items: center;
 	flex-direction: column;
     font-size: 25rem;
-    color:purple;
-    background-color: gray;
+    color:blue;
+    background-color: yellow;
   }
 </style>
 

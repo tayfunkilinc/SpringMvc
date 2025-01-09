@@ -2,6 +2,7 @@ package com.tpe.controller;
 //kullanicidan isteklerin alindigi kisim ve bu isteklere gore cevaplari hazirlayacagiz ve gonderecegiz
 
 import com.tpe.domain.Student;
+import com.tpe.exception.StudentNotFoundException;
 import com.tpe.service.IStudentService;
 import net.bytebuddy.matcher.StringMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,14 +88,43 @@ public class StudentController {
     ///response:update icin id si verilen ogrencinin bilgileri ile formu gosterme
 
     //id'si verilen ogrenciyi bulmaliyiz ki.. - sonradan bunu guncelleyebileyim
+    //http://localhost:8080/SpringMvc/students/update?id=1&name=jack
     @GetMapping("/update") //? ine kadar yazdim
     private ModelAndView sendFormUpdate(@RequestParam("id") Long identity){ //? sonrasini okumak icin RequestParam ile request icindeki gelen id degerini aliyorim
-
+        //RequestParam istekte gelen id okunur identity icine kaydedilir
+        //update?id=1&name=jack bu sekilde istek gelirse ikisini ayri ayri almamiz lazim
+        //@RequestParam("id","name") Long identity
         Student foundStudent = service.findStudentById(identity);
         ModelAndView mav = new ModelAndView();
         mav.addObject("student", foundStudent);
         mav.setViewName("studentForm");
         return mav;
+    }
+
+
+    //kullanicidan bilgi nasil alinir
+    //1- form/body(JSON)
+    //2- query param : /query?id=3
+    //3- path param : /3
+    //query param ve path param sadece 1 tane ise isim belirtmek opsiyonel
+
+
+    //4-Bir Ogrenciyi Silme
+    //request : http://localhost:8080/SpringMvc/students/delete/4
+    //response : ogrenci silinir ve kalan ogrenciler gosterilir
+    @GetMapping("/delete/{id}") //burda olusturdugumuz id degiskenine PathVariable ile aldigimiz identity degiskeninin degerini atamis olduk
+    public String deleteStudent(@PathVariable("id") Long identity){
+        service.deleteStudent(identity);
+        return "redirect:/students";
+    }
+
+    //@ExceptionHandler: try-catch blogunun mantigi ile benzer calisir, exception yakalar ve biz bunu handller ederiz
+    @ExceptionHandler(StudentNotFoundException.class)
+    public ModelAndView handleException(Exception exception){
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("message", exception.getMessage());
+        modelAndView.setViewName("notFound");
+        return  modelAndView;
     }
 
 

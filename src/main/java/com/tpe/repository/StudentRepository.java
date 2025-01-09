@@ -38,15 +38,22 @@ public class StudentRepository implements IStudentRepository{
         session =sessionFactory.openSession();
         Transaction transaction = session.beginTransaction();
 
-        session.saveOrUpdate(student); //burda ogrenci varsa gunceller yoksa yeni kayit olarak ekler
+        session.saveOrUpdate(student); //saveOrUpdate sayesinde burda ogrenci varsa gunceller yoksa yeni kayit olarak ekler
 
         transaction.commit();
         session.close();
     }
 
+    //4-c
     @Override
     public void delete(Student student) {
+        session = sessionFactory.openSession();
+        Transaction transaction = session.beginTransaction();
 
+        session.delete(student);
+
+        transaction.commit();
+        session.close();
     }
 
     //3-b
